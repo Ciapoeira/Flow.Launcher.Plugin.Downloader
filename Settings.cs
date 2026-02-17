@@ -30,6 +30,13 @@ public partial class Settings : ObservableObject {
             args.AddRange(["--cookies-from-browser", Browser]);
         }
 
+        if (DisablePlaylist)
+            args.Add("--no-playlist");
+
+        // ! For safety (otherwise requires task manager)
+        if (Silent && !DisablePlaylist)
+            args.Add("--no-playlist");
+
         return args;
     }
 }

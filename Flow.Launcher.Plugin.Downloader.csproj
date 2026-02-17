@@ -33,7 +33,7 @@
 		</PropertyGroup>
 
 		<Exec Command="taskkill /F /IM Flow.Launcher.exe /T" IgnoreExitCode="true" />
-		<Exec Command='xcopy "$(TargetDir)*" "$(PluginTargetDir)\" /S /Y /I' />
+		<Exec Command="xcopy &quot;$(TargetDir)*&quot; &quot;$(PluginTargetDir)\&quot; /S /Y /I" />
 		<Exec Command="powershell -NoProfile -Command &quot;Start-Process '$(FlowExe)'&quot;" />
 	</Target>
 
