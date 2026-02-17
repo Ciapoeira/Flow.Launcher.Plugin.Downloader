@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="plugin.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+
+		<Content Include="Resources\*.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="Flow.Launcher.Plugin" Version="5.1.0" />
+	</ItemGroup>
+
+	<Target Name="InstallAndRestartPlugin" AfterTargets="Build"
+		Condition="'$(Configuration)' == 'Debug'">
+		<PropertyGroup>
+			<PluginTargetDir>$(AppData)\FlowLauncher\Plugins\$(ProjectName)</PluginTargetDir>
+			<FlowExe>$(LocalAppData)\FlowLauncher\Flow.Launcher.exe</FlowExe>
+		</PropertyGroup>
+
+		<Exec Command="taskkill /F /IM Flow.Launcher.exe /T" IgnoreExitCode="true" />
+		<Exec Command='xcopy "$(TargetDir)*" "$(PluginTargetDir)\" /S /Y /I' />
+		<Exec Command="powershell -NoProfile -Command &quot;Start-Process '$(FlowExe)'&quot;" />
+	</Target>
+
+</Project>

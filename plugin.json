@@ -1,0 +1,15 @@
+{
+  "$schema": "https://www.flowlauncher.com/schemas/plugin.schema.json",
+  "ID": "3eaf055625bb4fe086a7430f9936cdbf",
+  "ActionKeywords": [
+    "yd"
+  ],
+  "Name": "Downloader",
+  "Description": "",
+  "Author": "Ciapoeira",
+  "Version": "1.0.1",
+  "Language": "csharp",
+  "Website": "https://github.com/Ciapoeira/Flow.Launcher.Plugin.Downloader",
+  "ExecuteFileName": "Flow.Launcher.Plugin.Downloader.dll",
+  "IcoPath": "Resources/download.png"
+}
