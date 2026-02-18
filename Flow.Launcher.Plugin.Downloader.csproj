@@ -6,8 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<PublishTrimmed>true</PublishTrimmed> 	<!-- May cause issues -->
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,16 +24,9 @@
 		<PackageReference Include="Flow.Launcher.Plugin" Version="5.1.0" />
 	</ItemGroup>
 
-	<Target Name="InstallAndRestartPlugin" AfterTargets="Build"
-		Condition="'$(Configuration)' == 'Debug'">
-		<PropertyGroup>
-			<PluginTargetDir>$(AppData)\FlowLauncher\Plugins\$(ProjectName)</PluginTargetDir>
-			<FlowExe>$(LocalAppData)\FlowLauncher\Flow.Launcher.exe</FlowExe>
-		</PropertyGroup>
-
-		<Exec Command="taskkill /F /IM Flow.Launcher.exe /T" IgnoreExitCode="true" />
-		<Exec Command="xcopy &quot;$(TargetDir)*&quot; &quot;$(PluginTargetDir)\&quot; /S /Y /I" />
-		<Exec Command="powershell -NoProfile -Command &quot;Start-Process '$(FlowExe)'&quot;" />
+	<Target Name="Deploy" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+		<Exec Command="pwsh -ExecutionPolicy Bypass -File &quot;$(ProjectDir)postbuild.ps1&quot;"
+			IgnoreExitCode="true" />
 	</Target>
 
 </Project>
