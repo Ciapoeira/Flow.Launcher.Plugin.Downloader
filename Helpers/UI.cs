@@ -53,8 +53,8 @@ public static class UI {
     return dialog.ShowDialog() == true ? dialog.FileName : "";
   }
 
-  static public string BrowseForFolder() {
+  static public string BrowseForFolder(Settings settings) {
     var dialog = new OpenFolderDialog { Title = "Select Download Directory" };
-    return dialog.ShowDialog() == true ? dialog.FolderName : "";
+    return dialog.ShowDialog() == true ? dialog.FolderName : settings.DownloadDir;
   }
 }

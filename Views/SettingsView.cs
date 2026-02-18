@@ -36,9 +36,13 @@ public class SettingsView : UserControl {
         DataContext = settings;
 
         AddSetting("Path to yt-dlp", CreateTextBox(Settings, nameof(Settings.Exe), false), CreateButton("Browse", (s, e) => Settings.Exe = BrowseForFile()));
-        AddSetting("Download Directory", CreateTextBox(Settings, nameof(Settings.DownloadDir), false), CreateButton("Browse", (s, e) => Settings.DownloadDir = BrowseForFolder()));
+        AddSetting("Download Directory", CreateTextBox(Settings, nameof(Settings.DownloadDir), false),
+        CreateButton("Browse",
+        (s, e) => Settings.DownloadDir = BrowseForFolder(Settings))
+        );
+        AddSetting("File Name", CreateTextBox(Settings, nameof(Settings.FileName), false));
         AddSetting("Browser (Empty to disable)", CreateComboBox(Settings, Settings.supportedBrowsers, nameof(Settings.Browser)));
-        AddSetting("JS Runtime", CreateComboBox(Settings, Settings.supportedRuntimes, nameof(Settings.Runtime)));
+        AddSetting("JS Runtime (Empty to disable)", CreateComboBox(Settings, Settings.supportedRuntimes, nameof(Settings.Runtime)));
         AddSetting("", CreateCheckBox(Settings, "Silent Mode", nameof(Settings.Silent)));
 
         Content = Layout;
