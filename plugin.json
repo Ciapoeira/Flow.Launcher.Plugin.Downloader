@@ -7,7 +7,7 @@
   "Name": "Downloader",
   "Description": "",
   "Author": "Ciapoeira",
-  "Version": "1.0.3",
+  "Version": "1.0.4",
   "Language": "csharp",
   "Website": "https://github.com/Ciapoeira/Flow.Launcher.Plugin.Downloader",
   "ExecuteFileName": "Flow.Launcher.Plugin.Downloader.dll",
