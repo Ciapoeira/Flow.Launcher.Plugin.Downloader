@@ -29,7 +29,7 @@ jobs:
           $version = $pluginJson.Version
 
           $tagName = if ("${{ github.event.release.tag_name }}") { "${{ github.event.release.tag_name }}" } else { "v$version" }
-          $zipName = "Flow.Launcher.Plugin.Downloader-$version.zip"
+          $zipName = "Flow.Launcher.Plugin.Downloader.zip"
 
           # 4. Zip the publish folder
           Compress-Archive -Path ./Release/* -DestinationPath $zipName
