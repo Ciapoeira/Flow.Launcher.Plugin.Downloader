@@ -40,7 +40,7 @@ public class SettingsView : UserControl {
         CreateButton("Browse",
         (s, e) => Settings.DownloadDir = BrowseForFolder(Settings))
         );
-        AddSetting("File Name", CreateTextBox(Settings, nameof(Settings.FileName), false));
+        AddSetting("File Name", CreateTextBox(Settings, nameof(Settings.FileName), true));
         AddSetting("Browser (Empty to disable)", CreateComboBox(Settings, Settings.supportedBrowsers, nameof(Settings.Browser)));
         AddSetting("JS Runtime (Empty to disable)", CreateComboBox(Settings, Settings.supportedRuntimes, nameof(Settings.Runtime)));
         AddSetting("", CreateCheckBox(Settings, "Silent Mode", nameof(Settings.Silent)));

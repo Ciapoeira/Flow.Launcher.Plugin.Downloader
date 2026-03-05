@@ -8,7 +8,6 @@ public static class Cmd {
         CancellationToken token = default) {
         ProcessStartInfo psi = new(exe) {
             RedirectStandardOutput = RedirectOutput,
-            RedirectStandardError = true,
             UseShellExecute = false,
             CreateNoWindow = isSilent,
         };
