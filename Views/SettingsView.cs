@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using static Flow.Launcher.Plugin.Downloader.Helpers.Ytdlp;
 using static Flow.Launcher.Plugin.Downloader.Helpers.UI;
 
 namespace Flow.Launcher.Plugin.Downloader.Views;
@@ -44,7 +45,8 @@ public class SettingsView : UserControl {
         AddSetting("Browser (Empty to disable)", CreateComboBox(Settings, Settings.supportedBrowsers, nameof(Settings.Browser)));
         AddSetting("JS Runtime (Empty to disable)", CreateComboBox(Settings, Settings.supportedRuntimes, nameof(Settings.Runtime)));
         AddSetting("", CreateCheckBox(Settings, "Silent Mode", nameof(Settings.Silent)));
-
+        AddSetting("", CreateCheckBox(Settings, "Copy to clipboard", nameof(Settings.CopyToClipboard)));
+        AddSetting("", CreateButton("Update", async (s, e) => await Update(Settings.Exe)));
         Content = Layout;
     }
 

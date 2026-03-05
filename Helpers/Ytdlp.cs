@@ -18,4 +18,8 @@ public static class Ytdlp {
         var json = await ExecuteAsync(exe, args, true, true, token);
         return string.IsNullOrWhiteSpace(json) ? null : JsonSerializer.Deserialize<Video>(json, options);
     }
+
+    public static async Task Update(string exe, CancellationToken token = default) {
+        await ExecuteAsync(exe, ["-U"], false, false, token);
+    }
 }

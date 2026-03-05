@@ -8,10 +8,9 @@ public partial class Settings : ObservableObject {
     public readonly string[] supportedBrowsers = ["", "brave", "chrome", "chromium", "edge", "firefox", "opera", "safari", "vivaldi", "whale"];
     public readonly string[] supportedRuntimes = ["", "deno", "node", "bun", "quickjs"];
 
-    // ? Should it be forced? Using a plugin for a whole playlists seems dumb
-    [ObservableProperty] private bool _disablePlaylist = true;
     [ObservableProperty] private bool _silent = false;
-    [ObservableProperty] private bool _usePresets = false;
+    [ObservableProperty] private bool _copyToClipboard = false;
+    [ObservableProperty] private bool _usePresets = false; // Currently on by default and serves no other purpose
     [ObservableProperty] private string _downloadDir = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
     [ObservableProperty] private string _exe = "yt-dlp";
     [ObservableProperty] private string _fileName = "%(title)s [%(id)s].%(ext)s";
@@ -22,7 +21,8 @@ public partial class Settings : ObservableObject {
 
     private List<string> GetArgs() {
         List<string> args = [
-            "--output", Path.Combine(DownloadDir, FileName)
+            "--output", Path.Combine(DownloadDir, FileName),
+            "--no-playlist"
         ];
 
         if (!string.IsNullOrEmpty(Runtime))
@@ -31,12 +31,8 @@ public partial class Settings : ObservableObject {
         if (!string.IsNullOrEmpty(Browser))
             args.AddRange(["--cookies-from-browser", Browser]);
 
-        if (DisablePlaylist)
-            args.Add("--no-playlist");
-
-        // ! For safety (otherwise requires task manager)
-        if (Silent && !DisablePlaylist)
-            args.Add("--no-playlist");
+        if (CopyToClipboard)
+            args.AddRange(["--exec", "powershell -NoProfile -Command Set-Clipboard -LiteralPath '{}'"]);
 
         return args;
     }
