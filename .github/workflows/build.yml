@@ -1,0 +1,48 @@
+name: Build & Release Plugin
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  build_release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Build and Package
+        shell: pwsh
+        run: |
+          dotnet publish -c Release -o ./publish
+
+          $pluginJson = Get-Content ./publish/plugin.json | ConvertFrom-Json
+          $version = $pluginJson.Version
+          $zipName = "Flow.Launcher.Plugin.Downloader-$version.zip"
+
+          Compress-Archive -Path ./publish/* -DestinationPath $zipName
+
+          echo "ZIP_NAME=$zipName" >> $env:GITHUB_ENV
+          echo "VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Flow-Launcher-Plugin
+          path: ${{ env.ZIP_NAME }}
+
+      - name: Publish Release Asset
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ZIP_NAME }}
+          tag_name: ${{ github.event.release.tag_name }}
