@@ -23,26 +23,25 @@ jobs:
       - name: Build and Package
         shell: pwsh
         run: |
-          dotnet publish -c Release -o ./publish
+          dotnet build --configuration Release -o ./Release
 
-          $pluginJson = Get-Content ./publish/plugin.json | ConvertFrom-Json
+          $pluginJson = Get-Content ./Release/plugin.json | ConvertFrom-Json
           $version = $pluginJson.Version
+
+          $tagName = if ("${{ github.event.release.tag_name }}") { "${{ github.event.release.tag_name }}" } else { "v$version" }
           $zipName = "Flow.Launcher.Plugin.Downloader-$version.zip"
 
-          Compress-Archive -Path ./publish/* -DestinationPath $zipName
+          # 4. Zip the publish folder
+          Compress-Archive -Path ./Release/* -DestinationPath $zipName
 
           echo "ZIP_NAME=$zipName" >> $env:GITHUB_ENV
-          echo "VERSION=$version" >> $env:GITHUB_ENV
+          echo "TAG_NAME=$tagName" >> $env:GITHUB_ENV
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Flow-Launcher-Plugin
-          path: ${{ env.ZIP_NAME }}
-
-      - name: Publish Release Asset
-        if: github.event_name == 'release'
+      - name: Upload/Update Release Assets
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ env.ZIP_NAME }}
-          tag_name: ${{ github.event.release.tag_name }}
+          tag_name: ${{ env.TAG_NAME }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
