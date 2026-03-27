@@ -7,8 +7,7 @@ using Microsoft.Win32;
 namespace Flow.Launcher.Plugin.Downloader.Helpers;
 
 public static class UI {
-  // UI Helpers
-  static public TextBox CreateTextBox(Settings settings, string propertyName, bool isEnabled = true) {
+  public static TextBox CreateTextBox(Settings settings, string propertyName, bool isEnabled = true) {
     var tb = new TextBox() { IsEnabled = isEnabled };
     tb.SetBinding(TextBox.TextProperty, new Binding(propertyName) {
       Source = settings,
@@ -18,7 +17,7 @@ public static class UI {
     return tb;
   }
 
-  static public CheckBox CreateCheckBox(Settings settings, string content, string propertyName) {
+  public static CheckBox CreateCheckBox(Settings settings, string content, string propertyName) {
     var cb = new CheckBox { Content = content };
     cb.SetBinding(CheckBox.IsCheckedProperty, new Binding(propertyName) {
       Source = settings,
@@ -27,7 +26,7 @@ public static class UI {
     return cb;
   }
 
-  static public Button CreateButton(string content, RoutedEventHandler onClick) {
+  public static Button CreateButton(string content, RoutedEventHandler onClick) {
     var btn = new Button { Content = content };
     btn.Click += onClick;
     return btn;
@@ -46,15 +45,13 @@ public static class UI {
     return combo;
   }
 
-
-  // Functionality
-  static public string BrowseForFile() {
-    var dialog = new OpenFileDialog { Filter = "Executable Files (*.exe)|*.exe|All files (*.*)|*.*" };
-    return dialog.ShowDialog() == true ? dialog.FileName : "";
+  public static string? BrowseForFile() {
+    var dialog = new OpenFileDialog { Filter = "Executable Files (*.exe)|*.exe" };
+    return dialog.ShowDialog() == true ? dialog.FileName : null;
   }
 
-  static public string BrowseForFolder(Settings settings) {
+  public static string? BrowseForFolder() {
     var dialog = new OpenFolderDialog { Title = "Select Download Directory" };
-    return dialog.ShowDialog() == true ? dialog.FolderName : settings.DownloadDir;
+    return dialog.ShowDialog() == true ? dialog.FolderName : null;
   }
 }

@@ -8,27 +8,29 @@ public partial class Settings : ObservableObject {
     public readonly string[] supportedBrowsers = ["", "brave", "chrome", "chromium", "edge", "firefox", "opera", "safari", "vivaldi", "whale"];
     public readonly string[] supportedRuntimes = ["", "deno", "node", "bun", "quickjs"];
 
-    [ObservableProperty] private bool _silent = false;
     [ObservableProperty] private bool _copyToClipboard = false;
+    [ObservableProperty] private bool _silent = false;
     [ObservableProperty] private bool _usePresets = false; // Currently on by default and serves no other purpose
+    [ObservableProperty] private string _concurrentFragments = "1";
     [ObservableProperty] private string _downloadDir = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
     [ObservableProperty] private string _exe = "yt-dlp";
     [ObservableProperty] private string _fileName = "%(title)s [%(id)s].%(ext)s";
     [ObservableProperty] private string _runtime = "";
-    [ObservableProperty] private string? _browser = null;
+    [ObservableProperty] private string _browser = "";
 
     public List<string> Args => GetArgs();
 
     private List<string> GetArgs() {
         List<string> args = [
             "--output", Path.Combine(DownloadDir, FileName),
-            "--no-playlist"
+            "--no-playlist",
+            "-N", ConcurrentFragments
         ];
 
-        if (!string.IsNullOrEmpty(Runtime))
+        if (Runtime != null)
             args.AddRange(["--js-runtimes", Runtime,]);
 
-        if (!string.IsNullOrEmpty(Browser))
+        if (Browser != null)
             args.AddRange(["--cookies-from-browser", Browser]);
 
         if (CopyToClipboard)

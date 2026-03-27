@@ -5,9 +5,9 @@ using Flow.Launcher.Plugin.Downloader.Views;
 namespace Flow.Launcher.Plugin.Downloader;
 
 public class Main : IAsyncPlugin, ISettingProvider, IContextMenu {
-    internal Settings Settings;
+    private Settings Settings = new();
 
-    internal ContextMenu ContextMenu;
+    private ContextMenu? ContextMenu;
 
     public Control CreateSettingPanel() {
         return new SettingsView(Settings);
@@ -22,7 +22,7 @@ public class Main : IAsyncPlugin, ISettingProvider, IContextMenu {
     }
 
     public List<Result> LoadContextMenus(Result selectedResult) {
-        return ContextMenu.LoadContextMenus(selectedResult);
+        return ContextMenu!.LoadContextMenus(selectedResult);
     }
 
     public async Task<List<Result>> QueryAsync(Query query, CancellationToken token) {

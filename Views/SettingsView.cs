@@ -1,23 +1,22 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using static Flow.Launcher.Plugin.Downloader.Helpers.Ytdlp;
 using static Flow.Launcher.Plugin.Downloader.Helpers.UI;
+using Flow.Launcher.Plugin.Downloader.Helpers;
 
 namespace Flow.Launcher.Plugin.Downloader.Views;
 
 public class SettingsView : UserControl {
-    internal Settings Settings;
-
     internal StackPanel Layout = new() { Margin = new Thickness(15) };
 
     private void AddSetting(string label, FrameworkElement control, Button? button = null) {
         var wrapper = new StackPanel { };
 
-        wrapper.Children.Add(new TextBlock {
-            Text = label,
-            FontWeight = FontWeights.Bold,
-            Margin = new Thickness(0, 0, 0, 5)
-        });
+        if (label != "")
+            wrapper.Children.Add(new TextBlock {
+                Text = label,
+                FontWeight = FontWeights.Bold,
+                Margin = new Thickness(0, 0, 0, 5)
+            });
 
         var inputRow = new DockPanel();
         if (button != null) {
@@ -32,25 +31,19 @@ public class SettingsView : UserControl {
         Layout.Children.Add(wrapper);
     }
 
-    public SettingsView(Settings settings) {
-        Settings = settings;
-        DataContext = settings;
-
-        AddSetting("Path to yt-dlp", CreateTextBox(Settings, nameof(Settings.Exe), false), CreateButton("Browse", (s, e) => Settings.Exe = BrowseForFile()));
+    public SettingsView(Settings Settings) {
+        AddSetting("Path to yt-dlp", CreateTextBox(Settings, nameof(Settings.Exe), false),
+            CreateButton("Browse", (s, e) => Settings.Exe = BrowseForFile() ?? Settings.Exe));
         AddSetting("Download Directory", CreateTextBox(Settings, nameof(Settings.DownloadDir), false),
-        CreateButton("Browse",
-        (s, e) => Settings.DownloadDir = BrowseForFolder(Settings))
-        );
+            CreateButton("Browse", (s, e) => Settings.DownloadDir = BrowseForFolder() ?? Settings.DownloadDir));
         AddSetting("File Name", CreateTextBox(Settings, nameof(Settings.FileName), true));
         AddSetting("Browser (Empty to disable)", CreateComboBox(Settings, Settings.supportedBrowsers, nameof(Settings.Browser)));
         AddSetting("JS Runtime (Empty to disable)", CreateComboBox(Settings, Settings.supportedRuntimes, nameof(Settings.Runtime)));
+        AddSetting("Number of concurrent fragments", CreateComboBox(Settings, ["1", "2", "3", "4", "5"], nameof(Settings.ConcurrentFragments)));
         AddSetting("", CreateCheckBox(Settings, "Silent Mode", nameof(Settings.Silent)));
         AddSetting("", CreateCheckBox(Settings, "Copy to clipboard", nameof(Settings.CopyToClipboard)));
-        AddSetting("", CreateButton("Update", async (s, e) => await Update(Settings.Exe)));
+        AddSetting("", CreateButton("Update", async (s, e) => await Ytdlp.Update(Settings.Exe)));
+
         Content = Layout;
     }
-
-
-
-
 }
