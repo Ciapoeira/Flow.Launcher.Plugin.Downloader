@@ -38,7 +38,7 @@ public class Main : IAsyncPlugin, ISettingProvider, IContextMenu {
             return [
                 new Result {
                     Title = video?.Title,
-                    ContextData = url,
+                    ContextData = (url, video?.Formats),
                     AsyncAction = async c => {
                         await DownloadVideoAsync(Settings.Exe, Settings.Args, url, Settings.Silent);
 

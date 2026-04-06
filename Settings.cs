@@ -10,7 +10,7 @@ public partial class Settings : ObservableObject {
 
     [ObservableProperty] private bool _copyToClipboard = false;
     [ObservableProperty] private bool _silent = false;
-    [ObservableProperty] private bool _usePresets = false; // Currently on by default and serves no other purpose
+    [ObservableProperty] private bool _usePresets = true;
     [ObservableProperty] private string _concurrentFragments = "1";
     [ObservableProperty] private string _downloadDir = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
     [ObservableProperty] private string _exe = "yt-dlp";
