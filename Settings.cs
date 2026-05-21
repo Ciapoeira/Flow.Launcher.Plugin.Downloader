@@ -3,7 +3,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Flow.Launcher.Plugin.Downloader;
 
-public partial class Settings : ObservableObject {
+public partial class Settings : ObservableObject
+{
     public readonly string[] supportedPresets = ["mp3", "aac", "mp4", "mkv"];
     public readonly string[] supportedBrowsers = ["", "brave", "chrome", "chromium", "edge", "firefox", "opera", "safari", "vivaldi", "whale"];
     public readonly string[] supportedRuntimes = ["", "deno", "node", "bun", "quickjs"];
@@ -20,17 +21,18 @@ public partial class Settings : ObservableObject {
 
     public List<string> Args => GetArgs();
 
-    private List<string> GetArgs() {
+    private List<string> GetArgs()
+    {
         List<string> args = [
             "--output", Path.Combine(DownloadDir, FileName),
             "--no-playlist",
             "-N", ConcurrentFragments
         ];
 
-        if (Runtime != null)
+        if (Runtime != "")
             args.AddRange(["--js-runtimes", Runtime,]);
 
-        if (Browser != null)
+        if (Browser != "")
             args.AddRange(["--cookies-from-browser", Browser]);
 
         if (CopyToClipboard)
