@@ -7,8 +7,8 @@ using Microsoft.Win32;
 namespace Flow.Launcher.Plugin.Downloader.Helpers;
 
 public static class UI {
-  public static TextBox CreateTextBox(Settings settings, string propertyName, bool isEnabled = true) {
-    var tb = new TextBox() { IsEnabled = isEnabled };
+  public static TextBox CreateTextBox(Settings settings, string propertyName, bool isReadOnly = false) {
+    var tb = new TextBox() { IsReadOnly = isReadOnly };
     tb.SetBinding(TextBox.TextProperty, new Binding(propertyName) {
       Source = settings,
       UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,

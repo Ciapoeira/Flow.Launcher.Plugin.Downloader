@@ -3,7 +3,7 @@ using static Flow.Launcher.Plugin.Downloader.Helpers.Cmd;
 
 namespace Flow.Launcher.Plugin.Downloader.Helpers;
 
-public record Video(string Title = "", string Thumbnail = "", Format[] Formats = null);
+public record Video(string Title = "", string Thumbnail = "", Format[]? Formats = null);
 
 public record Format(
     string format_id,

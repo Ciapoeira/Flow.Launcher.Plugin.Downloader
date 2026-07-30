@@ -3,25 +3,19 @@ using static Flow.Launcher.Plugin.Downloader.Helpers.Ytdlp;
 
 namespace Flow.Launcher.Plugin.Downloader;
 
-public class ContextMenu(Settings Settings) : IContextMenu
-{
+public class ContextMenu(Settings Settings) : IContextMenu {
 
-  public List<Result> LoadContextMenus(Result selectedResult)
-  {
+  public List<Result> LoadContextMenus(Result selectedResult) {
     List<Result> contextMenus = [];
 
     var (url, formats) = ((string url, Format?[] formats))selectedResult.ContextData;
 
-    if (Settings.UsePresets)
-    {
-      foreach (var preset in Settings.supportedPresets)
-      {
-        contextMenus.Add(new Result
-        {
+    if (Settings.UsePresets) {
+      foreach (var preset in Settings.supportedPresets) {
+        contextMenus.Add(new Result {
           Title = selectedResult.Title,
           SubTitle = preset,
-          AsyncAction = async c =>
-          {
+          AsyncAction = async c => {
             await DownloadVideoAsync(Settings.Exe, [.. Settings.Args, "-t", preset], url, Settings.Silent);
 
             return true;
@@ -30,17 +24,12 @@ public class ContextMenu(Settings Settings) : IContextMenu
         });
       }
     }
-    else
-    {
-      {
-        foreach (var format in formats)
-        {
-          contextMenus.Add(new Result
-          {
+    else {
+        foreach (var format in formats) {
+          contextMenus.Add(new Result {
             Title = selectedResult.Title,
-            SubTitle = format.format,
-            AsyncAction = async c =>
-            {
+            SubTitle = format!.format,
+            AsyncAction = async c => {
               await DownloadVideoAsync(Settings.Exe, [.. Settings.Args, "-f", format.format_id], url, Settings.Silent);
 
               return true;
@@ -48,10 +37,8 @@ public class ContextMenu(Settings Settings) : IContextMenu
             IcoPath = selectedResult.IcoPath,
           });
         }
-      }
     }
 
     return contextMenus;
   }
 }
-

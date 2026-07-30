@@ -9,7 +9,7 @@ public class SettingsView : UserControl {
     internal StackPanel Layout = new() { Margin = new Thickness(15) };
 
     private void AddSetting(string label, FrameworkElement control, Button? button = null) {
-        var wrapper = new StackPanel { };
+        var wrapper = new StackPanel {};
 
         if (label != "")
             wrapper.Children.Add(new TextBlock {
@@ -32,18 +32,18 @@ public class SettingsView : UserControl {
     }
 
     public SettingsView(Settings Settings) {
-        AddSetting("Path to yt-dlp", CreateTextBox(Settings, nameof(Settings.Exe), false),
+        AddSetting("Path to yt-dlp", CreateTextBox(Settings, nameof(Settings.Exe), true),
             CreateButton("Browse", (s, e) => Settings.Exe = BrowseForFile() ?? Settings.Exe));
-        AddSetting("Download Directory", CreateTextBox(Settings, nameof(Settings.DownloadDir), false),
+        AddSetting("Download directory", CreateTextBox(Settings, nameof(Settings.DownloadDir), true),
             CreateButton("Browse", (s, e) => Settings.DownloadDir = BrowseForFolder() ?? Settings.DownloadDir));
-        AddSetting("File Name", CreateTextBox(Settings, nameof(Settings.FileName), true));
-        AddSetting("Browser (Empty to disable)", CreateComboBox(Settings, Settings.supportedBrowsers, nameof(Settings.Browser)));
-        AddSetting("JS Runtime (Empty to disable)", CreateComboBox(Settings, Settings.supportedRuntimes, nameof(Settings.Runtime)));
+        AddSetting("File name", CreateTextBox(Settings, nameof(Settings.FileName), false));
+        AddSetting("Browser", CreateComboBox(Settings, Settings.supportedBrowsers, nameof(Settings.Browser)));
+        AddSetting("JS runtime", CreateComboBox(Settings, Settings.supportedRuntimes, nameof(Settings.Runtime)));
         AddSetting("Number of concurrent fragments", CreateComboBox(Settings, ["1", "2", "3", "4", "5"], nameof(Settings.ConcurrentFragments)));
         AddSetting("", CreateCheckBox(Settings, "Use presets", nameof(Settings.UsePresets)));
-        AddSetting("", CreateCheckBox(Settings, "Silent Mode", nameof(Settings.Silent)));
+        AddSetting("", CreateCheckBox(Settings, "Silent mode", nameof(Settings.Silent)));
         AddSetting("", CreateCheckBox(Settings, "Copy to clipboard", nameof(Settings.CopyToClipboard)));
-        AddSetting("", CreateButton("Update", async (s, e) => await Ytdlp.Update(Settings.Exe)));
+        AddSetting("", CreateButton("Update yt-dlp", async (s, e) => await Ytdlp.Update(Settings.Exe)));
 
         Content = Layout;
     }
