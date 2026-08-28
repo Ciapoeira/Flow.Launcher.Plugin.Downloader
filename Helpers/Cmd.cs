@@ -3,28 +3,28 @@
 namespace Flow.Launcher.Plugin.Downloader.Helpers;
 
 public static class Cmd {
-    public static async Task<string?> ExecuteAsync(string exe, List<string> args, bool isSilent,
-        bool redirectOutput,
-        CancellationToken token = default) {
-        ProcessStartInfo psi = new(exe) {
-            RedirectStandardOutput = redirectOutput,
-            UseShellExecute = false,
-            CreateNoWindow = isSilent,
-        };
+  public static async Task<string?> ExecuteAsync(string exe, List<string> args, bool isSilent,
+      bool redirectOutput,
+      CancellationToken token = default) {
+    ProcessStartInfo psi = new(exe) {
+      RedirectStandardOutput = redirectOutput,
+      UseShellExecute = false,
+      CreateNoWindow = isSilent,
+    };
 
-        foreach (var arg in args) psi.ArgumentList.Add(arg);
+    foreach (var arg in args) psi.ArgumentList.Add(arg);
 
-        try {
-            using var p = Process.Start(psi)!;
+    try {
+      using var p = Process.Start(psi)!;
 
-            var output = redirectOutput ? await p.StandardOutput.ReadToEndAsync(token) : null;
+      var output = redirectOutput ? await p.StandardOutput.ReadToEndAsync(token) : null;
 
-            await p.WaitForExitAsync(token);
-            return output;
-        } catch (OperationCanceledException) {
-            throw;
-        } catch {
-            return null;
-        }
+      await p.WaitForExitAsync(token);
+      return output;
+    } catch (OperationCanceledException) {
+      throw;
+    } catch {
+      return null;
     }
+  }
 }

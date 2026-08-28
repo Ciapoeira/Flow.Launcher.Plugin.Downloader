@@ -5,50 +5,76 @@ using Flow.Launcher.Plugin.Downloader.Views;
 namespace Flow.Launcher.Plugin.Downloader;
 
 public class Main : IAsyncPlugin, ISettingProvider, IContextMenu {
-    private Settings Settings = new();
+  private PluginInitContext? Context;
+  private ContextMenu? ContextMenu;
+  private Settings Settings = new();
 
-    private ContextMenu? ContextMenu;
+  private Result? NewResult;
+  private string PendingUrl = "";
 
-    public Control CreateSettingPanel() {
-        return new SettingsView(Settings);
+  public Control CreateSettingPanel() {
+    return new SettingsView(Settings);
+  }
+
+  public Task InitAsync(PluginInitContext context) {
+    Settings = context.API.LoadSettingJsonStorage<Settings>();
+
+    Context = context;
+
+    ContextMenu = new(Settings);
+
+    return Task.CompletedTask;
+  }
+
+  public List<Result> LoadContextMenus(Result selectedResult) {
+    return ContextMenu!.LoadContextMenus(selectedResult);
+  }
+
+  public async Task<List<Result>> QueryAsync(Query query, CancellationToken token) {
+    if (string.IsNullOrWhiteSpace(query.Search)) return [];
+
+    await Task.Delay(200, token);
+
+    var url = query.Search.Trim();
+
+    var Result = new Result {
+      Title = "Fetching metadata...",
+      SubTitle = url,
+      IcoPath = "Resources/download.png",
+      AsyncAction = async _ => {
+        await DownloadVideoAsync(Settings.Exe, Settings.Args, url, Settings.Silent);
+        return true;
+      }
+    };
+
+    if (url != PendingUrl) {
+      PendingUrl = url;
+      NewResult = null;
+
+      if (Uri.IsWellFormedUriString(url, UriKind.Absolute)) {
+        _ = PrepareVideoMetadata(url, token);
+      }
     }
 
-    public Task InitAsync(PluginInitContext context) {
-        Settings = context.API.LoadSettingJsonStorage<Settings>();
+    return (NewResult != null && PendingUrl == url) ? [NewResult] : [Result];
+  }
 
-        ContextMenu = new(Settings);
+  private async Task PrepareVideoMetadata(string url, CancellationToken token) {
+    var video = await GetVideoMetadataAsync(Settings.Exe, url, token);
 
-        return Task.CompletedTask;
-    }
+    if (url != PendingUrl || video == null) return;
 
-    public List<Result> LoadContextMenus(Result selectedResult) {
-        return ContextMenu!.LoadContextMenus(selectedResult);
-    }
+    NewResult = new() {
+      Title = video?.Title,
+      ContextData = (url, video?.Formats),
+      IcoPath = video?.Thumbnail,
+      AsyncAction = async _ => {
+        await DownloadVideoAsync(Settings.Exe, Settings.Args, url, Settings.Silent);
 
-    public async Task<List<Result>> QueryAsync(Query query, CancellationToken token) {
-        if (string.IsNullOrWhiteSpace(query.Search)) return [];
+        return true;
+      }
+    };
 
-        try {
-            await Task.Delay(200, token);
-
-            var url = query.Search.Trim();
-
-            var video = await GetVideoMetadataAsync(Settings.Exe, url, token);
-
-            return [
-                new Result {
-                    Title = video?.Title,
-                    ContextData = (url, video?.Formats),
-                    AsyncAction = async c => {
-                        await DownloadVideoAsync(Settings.Exe, Settings.Args, url, Settings.Silent);
-
-                        return true;
-                    },
-                    IcoPath = video?.Thumbnail ?? "Resources/download.png",
-                }
-            ];
-        } catch (OperationCanceledException) {
-            return [];
-        }
-    }
+    Context!.API.ReQuery();
+  }
 };

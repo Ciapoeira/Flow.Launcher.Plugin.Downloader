@@ -23,20 +23,19 @@ public class ContextMenu(Settings Settings) : IContextMenu {
           IcoPath = selectedResult.IcoPath,
         });
       }
-    }
-    else {
-        foreach (var format in formats) {
-          contextMenus.Add(new Result {
-            Title = selectedResult.Title,
-            SubTitle = format!.format,
-            AsyncAction = async c => {
-              await DownloadVideoAsync(Settings.Exe, [.. Settings.Args, "-f", format.format_id], url, Settings.Silent);
+    } else {
+      foreach (var format in formats) {
+        contextMenus.Add(new Result {
+          Title = selectedResult.Title,
+          SubTitle = format!.format,
+          AsyncAction = async c => {
+            await DownloadVideoAsync(Settings.Exe, [.. Settings.Args, "-f", format.format_id], url, Settings.Silent);
 
-              return true;
-            },
-            IcoPath = selectedResult.IcoPath,
-          });
-        }
+            return true;
+          },
+          IcoPath = selectedResult.IcoPath,
+        });
+      }
     }
 
     return contextMenus;

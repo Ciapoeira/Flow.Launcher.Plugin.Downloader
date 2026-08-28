@@ -11,20 +11,20 @@ public record Format(
 );
 
 public static class Ytdlp {
-    private static readonly JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
+  private static readonly JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
 
-    public static async Task DownloadVideoAsync(string exe, List<string> args, string url, bool silent, CancellationToken token = default) {
-        await ExecuteAsync(exe, [.. args, url], silent, false, token);
-    }
+  public static async Task DownloadVideoAsync(string exe, List<string> args, string url, bool silent, CancellationToken token = default) {
+    await ExecuteAsync(exe, [.. args, url], silent, false, token);
+  }
 
-    public static async Task<Video?> GetVideoMetadataAsync(string exe, string url, CancellationToken token = default) {
-        List<string> args = ["--no-warnings", "--dump-json", "--no-playlist", url];
+  public static async Task<Video?> GetVideoMetadataAsync(string exe, string url, CancellationToken token = default) {
+    List<string> args = ["--no-warnings", "--dump-json", "--no-playlist", url];
 
-        var json = await ExecuteAsync(exe, args, true, true, token);
-        return string.IsNullOrWhiteSpace(json) ? null : JsonSerializer.Deserialize<Video>(json, options);
-    }
+    var json = await ExecuteAsync(exe, args, true, true, token);
+    return string.IsNullOrWhiteSpace(json) ? null : JsonSerializer.Deserialize<Video>(json, options);
+  }
 
-    public static async Task Update(string exe, CancellationToken token = default) {
-        await ExecuteAsync(exe, ["-U"], false, false, token);
-    }
+  public static async Task Update(string exe, CancellationToken token = default) {
+    await ExecuteAsync(exe, ["-U"], false, false, token);
+  }
 }
