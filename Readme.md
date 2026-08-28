@@ -6,5 +6,4 @@
 
 # Common issues
 
-- Wrong plugin configuration
-- Outdated yt-dlp version (`yt-dlp -U` or if installed via winget `winget upgrade --id yt-dlp.yt-dlp`)
+- Outdated yt-dlp version
